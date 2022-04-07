@@ -8,6 +8,9 @@ window.onload = function() {
     const seekBackButton = document.getElementById('seekback')
     const sliderContainer = document.getElementById('rangeSlider')
     const innerBar = document.getElementById('innerBar')
+    let playing = false
+
+    const audioTest = document.getElementById('audioTest')
 
 
 
@@ -41,6 +44,10 @@ window.onload = function() {
         seekForwardButton.addEventListener('click', sfAudio.bind(this, audio))
         seekBackButton.addEventListener('click', sbAudio.bind(this, audio))
         sliderContainer.addEventListener('click', rangeSlider.bind(this, audio))
+
+        audioTest.addEventListener('timeupdate', function() {
+            console.log('updating!!')
+        })
     }
 
     function rangeSlider(audio, event) {
@@ -60,12 +67,18 @@ window.onload = function() {
         }
     }
 
+    function markerListener() {
+        console.log('running!')
+    }
+
     function playAudio(audio) {
         audio.play()
+        playing = true
     }
 
     function pauseAudio(audio) {
         audio.pause()
+        playing = false
     }
 
     function sfAudio(audio) {
