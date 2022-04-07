@@ -1,11 +1,13 @@
 window.onload = function() {
-    
+
     // First, I'll declare any global variables I'd like to have access to
     const episodesUrl = 'http://localhost:1337/episodes'
     const playButton = document.getElementById('play')
     const pauseButton = document.getElementById('pause')
     const seekForwardButton = document.getElementById('seekforward')
     const seekBackButton = document.getElementById('seekback')
+    const sliderContainer = document.getElementById('rangeSlider')
+    const innerBar = document.getElementById('innerBar')
 
 
 
@@ -30,11 +32,32 @@ window.onload = function() {
     function podcastPlayer(data) {
         let audio = new Audio('http://localhost:1337' + data[0].audio)
 
+        //Make the range slider 
+        rangeSlider(audio)
+
         //Event Listeners
         playButton.addEventListener('click', playAudio.bind(this, audio))
         pauseButton.addEventListener('click', pauseAudio.bind(this, audio))
         seekForwardButton.addEventListener('click', sfAudio.bind(this, audio))
         seekBackButton.addEventListener('click', sbAudio.bind(this, audio))
+        sliderContainer.addEventListener('click', rangeSlider.bind(this, audio))
+    }
+
+    function rangeSlider(audio, event) {
+        console.log('clicked!')
+        //to make the slider, I need to track what percentage of the width the user clicked.
+        // From there, I can use that percentage to find where it would be in the audio, and play.
+        console.log('audio', audio)
+        if(event) {
+            let percentage = event.offsetX / 800
+            let newTime = audio.duration * percentage
+
+            // show the width at the current spot 
+            innerBar.style.setProperty('right', 100 - (percentage * 100) + '%')
+
+            audio.currentTime = newTime
+            playAudio(audio)
+        }
     }
 
     function playAudio(audio) {

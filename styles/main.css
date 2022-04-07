@@ -1,0 +1,27 @@
+.container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+}
+
+.headline {
+    width: 100%;
+    text-align: center;
+}
+
+.sliderBar {
+    width: 800px;
+    height: 25px;
+    background: lightgray;
+    margin: 10px 0;
+    position: relative;
+}
+
+.innerBar {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    background: black;
+}

@@ -4,12 +4,20 @@
         <meta charset="utf-8">
         <title>Podcast Player</title>
         <script type="text/javascript" src="scripts/index.js"></script>
+        <link rel="stylesheet" href="styles/main.css">
     </head>
     <body>
         <div class="container">
-            <h1>Podcast Player</h1>
+            <h1 class="headline">Podcast Player</h1>
 
             <section class="podcastPlayer">
+
+                <div id="rangeSlider">
+                    <div class="sliderBar">
+                        <div class="innerBar" id="innerBar"></div>
+                    </div>
+                </div>
+
                 <button id="seekback">
                     Back
                 </button>
@@ -22,6 +30,7 @@
                 <button id="seekforward">
                     Fast Forward
                 </button>
+                <input id="selectSpot" />
             </section>
         </div>
     </body>
