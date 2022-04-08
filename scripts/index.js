@@ -8,7 +8,8 @@ window.onload = function() {
     const seekBackButton = document.getElementById('seekback')
     const sliderContainer = document.getElementById('rangeSlider')
     const innerBar = document.getElementById('innerBar')
-    let playing = false
+    const contentSection = document.getElementById('contentDisplay')
+    const contentHeadline = document.getElementById('contentHeadline')
 
     const audioTest = document.getElementById('audioTest')
 
@@ -33,6 +34,8 @@ window.onload = function() {
     fetchData(episodesUrl, podcastPlayer)
 
     function podcastPlayer(data) {
+        //TO DO - right now I'm just grabbing the first audio info; come back to how to expand it
+        let audioData = data[0]
         let audio = new Audio('http://localhost:1337' + data[0].audio)
 
         //Make the range slider 
@@ -44,11 +47,49 @@ window.onload = function() {
         seekForwardButton.addEventListener('click', sfAudio.bind(this, audio))
         seekBackButton.addEventListener('click', sbAudio.bind(this, audio))
         sliderContainer.addEventListener('click', rangeSlider.bind(this, audio))
+        audio.addEventListener('timeupdate', audioCheck.bind(this, audio, audioData))
 
-        audioTest.addEventListener('timeupdate', function() {
-            console.log('updating!!')
+        // audioTest.addEventListener('timeupdate', function() {
+        //     console.log('updating!!')
+        // })
+
+        // audio.addEventListener('timeupdate', function () {
+        //     console.log('testing audio update')
+        // })
+    }
+
+    function audioCheck(audio, data) {
+
+        let display = []
+
+        data.markers.forEach((marker) => {
+            let markerEnd = marker.start + marker.duration
+
+            if (audio.currentTime > marker.start && audio.currentTime < markerEnd) {
+                //I need to display!
+                console.log('I need to display!')
+                display.push(marker)
+            } else {
+                if (display.includes(marker)) {
+                    //take it out of the array
+                    let index = display.indexOf(marker)
+                    display.splice(index, 1)
+                }
+            }
+
+            if (display.length) {
+                //display the marker
+                displayMarker(display[0], audio)
+            }
         })
     }
+
+    function displayMarker(marker, audio) {
+        if (marker.content) {
+            console.log('marker.content', marker.content)
+            contentHeadline.innerHTML = marker.content
+        }
+    } 
 
     function rangeSlider(audio, event) {
         console.log('clicked!')
@@ -65,10 +106,6 @@ window.onload = function() {
             audio.currentTime = newTime
             playAudio(audio)
         }
-    }
-
-    function markerListener() {
-        console.log('running!')
     }
 
     function playAudio(audio) {
