@@ -10,6 +10,8 @@ window.onload = function() {
     const innerBar = document.getElementById('innerBar')
     const contentSection = document.getElementById('contentDisplay')
     const contentHeadline = document.getElementById('contentHeadline')
+    const contentLink = document.getElementById('contentLink')
+    const contentImage = document.getElementById('contentImage')
 
     const audioTest = document.getElementById('audioTest')
 
@@ -38,9 +40,6 @@ window.onload = function() {
         let audioData = data[0]
         let audio = new Audio('http://localhost:1337' + data[0].audio)
 
-        //Make the range slider 
-        rangeSlider(audio)
-
         //Event Listeners
         playButton.addEventListener('click', playAudio.bind(this, audio))
         pauseButton.addEventListener('click', pauseAudio.bind(this, audio))
@@ -48,17 +47,12 @@ window.onload = function() {
         seekBackButton.addEventListener('click', sbAudio.bind(this, audio))
         sliderContainer.addEventListener('click', rangeSlider.bind(this, audio))
         audio.addEventListener('timeupdate', audioCheck.bind(this, audio, audioData))
-
-        // audioTest.addEventListener('timeupdate', function() {
-        //     console.log('updating!!')
-        // })
-
-        // audio.addEventListener('timeupdate', function () {
-        //     console.log('testing audio update')
-        // })
     }
 
     function audioCheck(audio, data) {
+
+        //have the slider continuously update
+        rangeSlider(audio)
 
         let display = []
 
@@ -67,7 +61,6 @@ window.onload = function() {
 
             if (audio.currentTime > marker.start && audio.currentTime < markerEnd) {
                 //I need to display!
-                console.log('I need to display!')
                 display.push(marker)
             } else {
                 if (display.includes(marker)) {
@@ -86,16 +79,30 @@ window.onload = function() {
 
     function displayMarker(marker, audio) {
         if (marker.content) {
-            console.log('marker.content', marker.content)
-            contentHeadline.innerHTML = marker.content
+            if (marker.type === 'text') {
+                contentHeadline.innerHTML = marker.content
+            } else {
+                contentHeadline.innerHTML = ''
+            }
+
+            if (marker.type === 'ad') {
+                contentLink.innerHTML = '<a href="' + marker.link + '" target="_blank">' + marker.content + '</a>'
+            } else {
+                contentLink.innerHTML = ''
+            }
+
+            if (marker.type === 'image') {
+                // TO DO - check if there's an image before calling, so it doesn't re-render over and over
+                contentImage.innerHTML = '<img src="http://localhost:1337/' + marker.content + '" alt="Advertisement Image"></img>'
+            } else {
+                contentImage.innerHTML = ''
+            }
         }
     } 
 
     function rangeSlider(audio, event) {
-        console.log('clicked!')
         //to make the slider, I need to track what percentage of the width the user clicked.
         // From there, I can use that percentage to find where it would be in the audio, and play.
-        console.log('audio', audio)
         if(event) {
             let percentage = event.offsetX / 800
             let newTime = audio.duration * percentage
@@ -105,6 +112,12 @@ window.onload = function() {
 
             audio.currentTime = newTime
             playAudio(audio)
+        } else {
+            // This is for the continuous update of the slider, not from a click event
+            let percentage = audio.currentTime / audio.duration
+            innerBar.style.setProperty('right', 100 - (percentage * 100) + '%')
+
+            // TODO - make this more smooth visually (maybe through css animation/transition?)
         }
     }
 
@@ -119,21 +132,16 @@ window.onload = function() {
     }
 
     function sfAudio(audio) {
-        console.log('fast forward', audio.currentTime)
         audio.currentTime = audio.currentTime + 5
-        console.log('new time', audio.currentTime)
         playAudio(audio)
     }
 
     function sbAudio(audio) {
-        console.log('back', audio.currentTime)
         let newTime = audio.currentTime - 5
 
         if (newTime < 0) {
             newTime = 0
         }
-
-        console.log('new time', newTime)
         audio.currentTime = newTime
         playAudio(audio)
 
