@@ -42,8 +42,28 @@ body {
     text-align: center;
 }
 
+.contentDisplay {
+    width: 350px;
+    height: 350px;
+    background: #bfdbfe;
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
+}
+
+.contentImage img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+}
+
 .sliderBar {
-    width: 500px;
+    width: 350px;
     height: 12px;
     background: lightgray;
     margin: 10px 0;
@@ -58,4 +78,36 @@ body {
     bottom: 0;
     background: black;
     border-radius: 10px;
+}
+
+/* ======== BUTTONS ======== */
+
+.podcastButtons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.podcastButtons button {
+    border: none;
+    background: none;
+}
+
+.podcastButtons button:hover {
+    cursor: pointer;
+}
+
+.backButton,
+.forwardButton {
+    font-size: 20px;
+}
+
+.playButton,
+.pauseButton {
+    font-size: 40px;
+    width: 65px;
+}
+
+.hidden {
+    display: none;
 }

@@ -8,13 +8,9 @@ window.onload = function() {
     const seekBackButton = document.getElementById('seekback')
     const sliderContainer = document.getElementById('rangeSlider')
     const innerBar = document.getElementById('innerBar')
-    const contentSection = document.getElementById('contentDisplay')
     const contentHeadline = document.getElementById('contentHeadline')
     const contentLink = document.getElementById('contentLink')
     const contentImage = document.getElementById('contentImage')
-
-    const audioTest = document.getElementById('audioTest')
-
 
 
     // Here is a generic fetch data function that I can use to grab what I need from the server
@@ -54,6 +50,7 @@ window.onload = function() {
         //have the slider continuously update
         rangeSlider(audio)
 
+        // Handle the markers
         let display = []
 
         data.markers.forEach((marker) => {
@@ -75,6 +72,12 @@ window.onload = function() {
                 displayMarker(display[0], audio)
             }
         })
+
+        // Set pause button back to play at the end
+        if (audio.currentTime === audio.duration) {
+            playButton.classList.remove('hidden')
+            pauseButton.classList.add('hidden')
+        }
     }
 
     function displayMarker(marker, audio) {
@@ -105,7 +108,7 @@ window.onload = function() {
         //to make the slider, I need to track what percentage of the width the user clicked.
         // From there, I can use that percentage to find where it would be in the audio, and play.
         if(event) {
-            let percentage = event.offsetX / 500
+            let percentage = event.offsetX / 350
             let newTime = audio.duration * percentage
 
             // show the width at the current spot 
@@ -125,11 +128,15 @@ window.onload = function() {
     function playAudio(audio) {
         audio.play()
         playing = true
+        playButton.classList.add('hidden')
+        pauseButton.classList.remove('hidden')
     }
 
     function pauseAudio(audio) {
         audio.pause()
         playing = false
+        pauseButton.classList.add('hidden')
+        playButton.classList.remove('hidden')
     }
 
     function sfAudio(audio) {
