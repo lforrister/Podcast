@@ -36,7 +36,7 @@ window.onload = function() {
     fetchData(episodesUrl, podcastPlayer)
 
     function podcastPlayer(data) {
-        //TO DO - right now I'm just grabbing the first audio info; come back to how to expand it
+        //TODO - right now I'm just grabbing the first audio info; come back to how to expand it
         let audioData = data[0]
         let audio = new Audio('http://localhost:1337' + data[0].audio)
 
@@ -92,10 +92,11 @@ window.onload = function() {
             }
 
             if (marker.type === 'image') {
-                // TO DO - check if there's an image before calling, so it doesn't re-render over and over
-                contentImage.innerHTML = '<img src="http://localhost:1337/' + marker.content + '" alt="Advertisement Image"></img>'
+                if (!contentImage.innerHTML) {
+                    contentImage.innerHTML = '<img src="http://localhost:1337/' + marker.content + '" alt="Advertisement Image"></img>'
+                }
             } else {
-                contentImage.innerHTML = ''
+                contentImage.innerHTML = null
             }
         }
     } 
