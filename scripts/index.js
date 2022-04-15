@@ -2,6 +2,7 @@ window.onload = function() {
 
     // First, I'll declare any global variables I'd like to have access to
     const episodesUrl = 'http://localhost:1337/episodes'
+    const mainHeadline = document.getElementById('mainHeadline')
     const playButton = document.getElementById('play')
     const pauseButton = document.getElementById('pause')
     const seekForwardButton = document.getElementById('seekforward')
@@ -36,6 +37,9 @@ window.onload = function() {
         let audioData = data[0]
         let audio = new Audio('http://localhost:1337' + data[0].audio)
 
+        //Set the headline text to the audio name
+        mainHeadline.innerHTML = data[0].name
+
         //Event Listeners
         playButton.addEventListener('click', playAudio.bind(this, audio))
         pauseButton.addEventListener('click', pauseAudio.bind(this, audio))
@@ -68,7 +72,6 @@ window.onload = function() {
             }
 
             if (display.length) {
-                //display the marker
                 displayMarker(display[0], audio)
             }
         })
