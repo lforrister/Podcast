@@ -72,27 +72,31 @@ window.onload = function() {
             }
 
             if (display.length) {
-                displayMarker(display[0], audio)
+                displayMarker(display[0])
             }
         })
 
-        // Set pause button back to play at the end
+        // Set pause button back to play at the end 
         if (audio.currentTime === audio.duration) {
             playButton.classList.remove('hidden')
             pauseButton.classList.add('hidden')
         }
     }
 
-    function displayMarker(marker, audio) {
+    function displayMarker(marker) {
         if (marker.content) {
             if (marker.type === 'text') {
-                contentHeadline.innerHTML = marker.content
+                if (!contentHeadline.innerHTML) {
+                    contentHeadline.innerHTML = marker.content
+                }
             } else {
                 contentHeadline.innerHTML = ''
             }
 
             if (marker.type === 'ad') {
-                contentLink.innerHTML = '<a href="' + marker.link + '" target="_blank">' + marker.content + '</a>'
+                if (!contentImage.innerHTML) {
+                    contentLink.innerHTML = '<a href="' + marker.link + '" target="_blank">' + marker.content + '</a>'
+                }
             } else {
                 contentLink.innerHTML = ''
             }

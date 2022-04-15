@@ -112,12 +112,16 @@ body {
     border-radius: 10px;
 }
 
+.sliderBar:hover {
+    cursor: pointer;
+}
+
 .innerBar {
     position: absolute;
     left: 0;
     top: 0;
     bottom: 0;
-    background: var(--med-blue);
+    background: var(--deep-blue);
     border-radius: 10px;
 }
 
