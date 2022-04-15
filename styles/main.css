@@ -6,6 +6,9 @@ body {
     /* resuable variables  */
     --montserrat: 'Montserrat', sans-serif;
     --raleway: 'Raleway', sans-serif;
+    --deep-blue: #182848;
+    --baby-blue: #bfdbfe;
+    --med-blue: #4b6cb7;
 
 
     font-family: var(--raleway);
@@ -21,7 +24,7 @@ body {
     background: linear-gradient(to bottom right, #000046, #1CB5E0);
     background: linear-gradient(to bottom right, #bfdbfe, rgba(191,219,254,0));
     /* background: linear-gradient(to bottom right, #24C6DC, #514A9D); */
-    /* background: linear-gradient(to bottom right, #4b6cb7, #182848); */
+    background: linear-gradient(to bottom right, var(--med-blue), var(--deep-blue));
     /* background: linear-gradient(to bottom right, #00d2ff, #3a7bd5); */
     /* background: linear-gradient(to bottom right, #B993D6, #8CA6DB); */
     /* background: linear-gradient(to bottom right, #0f0c29, #302b63); */
@@ -43,19 +46,44 @@ body {
     text-align: center;
     text-transform: uppercase;
     letter-spacing: 4px;
-    border-bottom: 1px solid black;
-    padding-bottom: 15px;
     margin-top: 0;
-    margin-bottom: 22px;
+    margin-bottom: 15px;
+    color: var(--deep-blue);
 }
+
+/*======= CONTENT SECTION =======*/
 
 .contentDisplay {
     width: 350px;
     height: 350px;
-    background: #bfdbfe;
+    background: var(--baby-blue);
     margin-left: auto;
     margin-right: auto;
     position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.contentHeadline {
+    color: var(--deep-blue);
+}
+
+.contentLink {
+    display: flex;
+}
+
+.contentLink a {
+    color: var(--deep-blue);
+    font-size: 22px;
+    font-weight: bold;
+    display: block;
+    width: 100%;
+    text-align: center;
+}
+
+.contentLink a:hover {
+    color: var(--med-blue);
 }
 
 .contentImage img {
@@ -89,7 +117,7 @@ body {
     left: 0;
     top: 0;
     bottom: 0;
-    background: black;
+    background: var(--med-blue);
     border-radius: 10px;
 }
 
@@ -105,6 +133,7 @@ body {
 .podcastButtons button {
     border: none;
     background: none;
+    color: var(--deep-blue);
 }
 
 .podcastButtons button:hover {
