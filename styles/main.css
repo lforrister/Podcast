@@ -1,8 +1,40 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@100;400;800&family=Raleway:wght@300;400;600&display=swap');
+
+
+
+body {
+    /* resuable variables  */
+    --montserrat: 'Montserrat', sans-serif;
+    --raleway: 'Raleway', sans-serif;
+
+
+    font-family: var(--raleway);
+    margin: 0;
+}
+
 .container {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
     align-items: center;
+    min-height: 100vh;
+    background: linear-gradient(to bottom right, #000046, #1CB5E0);
+    background: linear-gradient(to bottom right, #bfdbfe, rgba(191,219,254,0));
+    /* background: linear-gradient(to bottom right, #24C6DC, #514A9D); */
+    /* background: linear-gradient(to bottom right, #4b6cb7, #182848); */
+    /* background: linear-gradient(to bottom right, #00d2ff, #3a7bd5); */
+    /* background: linear-gradient(to bottom right, #B993D6, #8CA6DB); */
+    /* background: linear-gradient(to bottom right, #0f0c29, #302b63); */
+    /* background: linear-gradient(to bottom right, #B2FEFA, #0ED2F7); */
+    /* background: linear-gradient(to bottom right, #56CCF2, #2F80ED); */
+}
+
+.mainModal {
+    padding: 30px;
+    background: white;
+    border-radius: 5px;
+    box-shadow: 0px 3px 15px rgba(0,0,0,0.1);
+    /* box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1),0 2px 4px -1px rgba(0,0,0,0.06); */
 }
 
 .headline {
@@ -11,11 +43,12 @@
 }
 
 .sliderBar {
-    width: 800px;
-    height: 25px;
+    width: 500px;
+    height: 12px;
     background: lightgray;
     margin: 10px 0;
     position: relative;
+    border-radius: 10px;
 }
 
 .innerBar {
@@ -24,4 +57,5 @@
     top: 0;
     bottom: 0;
     background: black;
+    border-radius: 10px;
 }

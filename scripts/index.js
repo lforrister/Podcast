@@ -104,7 +104,7 @@ window.onload = function() {
         //to make the slider, I need to track what percentage of the width the user clicked.
         // From there, I can use that percentage to find where it would be in the audio, and play.
         if(event) {
-            let percentage = event.offsetX / 800
+            let percentage = event.offsetX / 500
             let newTime = audio.duration * percentage
 
             // show the width at the current spot 
