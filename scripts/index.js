@@ -50,7 +50,7 @@ window.onload = function() {
             if (this.prev) {
                 let prevListener = this.changeAudio.bind(this, this.prev, this.fullData, this.audio, audioListener)
                 prevAudio.classList.remove('hidden')
-                //prevAudio.removeEventListener('click', prevListener)
+                prevAudio.removeEventListener('click', prevListener)
                 prevAudio.addEventListener('click', prevListener)
 
             } else {
@@ -60,7 +60,7 @@ window.onload = function() {
             if (this.next) {
                 let nextListener = this.changeAudio.bind(this, this.next, this.fullData, this.audio, audioListener)
                 nextAudio.classList.remove('hidden')
-                //nextAudio.removeEventListener('click')
+                nextAudio.removeEventListener('click', nextListener)
                 nextAudio.addEventListener('click', nextListener)
             } else {
                 nextAudio.classList.add('hidden')
