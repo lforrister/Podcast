@@ -45,10 +45,9 @@ body {
     width: 100%;
     text-align: center;
     text-transform: uppercase;
-    letter-spacing: 4px;
-    margin-top: 0;
-    margin-bottom: 15px;
+    margin: 0 auto 15px auto;
     color: var(--deep-blue);
+    line-height: 34px;
 }
 
 /*======= CONTENT SECTION =======*/
@@ -155,19 +154,21 @@ body {
     width: 65px;
 }
 
-.nextAudio {
+.nextAudio,
+.prevAudio {
     position: absolute;
-    right: 30px;
     top: 33px;
     width: 30px;
     height: 30px;
-    border-radius: 50%;
-    background: var(--deep-blue);
-    color: white;
-    font-size: 15px;
+    color: var(--deep-blue);
+    font-size: 30px;
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+.nextAudio {
+    right: 30px
 }
 
 .nextAudio:hover {

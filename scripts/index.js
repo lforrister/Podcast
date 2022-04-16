@@ -24,6 +24,7 @@ window.onload = function() {
             this.prev = fullData[this.index - 1] ? fullData[this.index - 1] : null
             this.next = fullData[this.index + 1] ? fullData[this.index + 1] : null 
 
+           
             this.setUp()
         }
         
@@ -64,7 +65,7 @@ window.onload = function() {
         clearContent() {
             contentHeadline.innerHTML = ''
             contentLink.innerHTML = ''
-            contentImage.innerHTML = null
+            contentImage.innerHTML = ''
         }
 
        audioCheck(audio, data) {
@@ -78,22 +79,20 @@ window.onload = function() {
                 let markerEnd = marker.start + marker.duration
     
                 if (audio.currentTime > marker.start && audio.currentTime < markerEnd) {
-                    //I need to display!
                     display.push(marker)
                 } else {
                     if (display.includes(marker)) {
-                        //take it out of the array
                         let index = display.indexOf(marker)
                         display.splice(index, 1)
                     }
                 }
-    
-                if (display.length) {
-                    this.displayMarker(display[0])
-                } else {
-                    this.clearContent()
-                }
             })
+
+            if (display.length) {
+                this.displayMarker(display[0])
+            } else {
+                this.clearContent()
+            }
     
             // Set pause button back to play at the end 
             if (audio.currentTime === audio.duration) {
