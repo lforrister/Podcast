@@ -171,7 +171,8 @@ body {
     right: 30px
 }
 
-.nextAudio:hover {
+.nextAudio:hover,
+.prevAudio:hover {
     cursor: pointer;
 }
 

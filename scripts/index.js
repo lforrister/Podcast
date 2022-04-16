@@ -107,21 +107,23 @@ window.onload = function() {
     
             // Set pause button back to play at the end 
             if (audio.currentTime === audio.duration) {
-                playButton.classList.remove('hidden')
-                pauseButton.classList.add('hidden')
+                this.toggleBtn(pauseButton, playButton)
             }
         }
 
         playAudio(audio) {
             audio.play()
-            playButton.classList.add('hidden')
-            pauseButton.classList.remove('hidden')
+            this.toggleBtn(playButton, pauseButton)
         }
 
         pauseAudio(audio) {
             audio.pause()
-            pauseButton.classList.add('hidden')
-            playButton.classList.remove('hidden')
+            this.toggleBtn(pauseButton, playButton)
+        }
+
+        toggleBtn(oldBtn, newBtn) {
+            newBtn.classList.remove('hidden')
+            oldBtn.classList.add('hidden')
         }
 
         sfAudio(audio) {
