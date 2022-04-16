@@ -90,6 +90,8 @@ window.onload = function() {
     
                 if (display.length) {
                     this.displayMarker(display[0])
+                } else {
+                    this.clearContent()
                 }
             })
     
