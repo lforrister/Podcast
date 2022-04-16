@@ -5,8 +5,8 @@ window.onload = function() {
     const mainHeadline = document.getElementById('mainHeadline')
     const playButton = document.getElementById('play')
     const pauseButton = document.getElementById('pause')
-    const seekForwardButton = document.getElementById('seekforward')
-    const seekBackButton = document.getElementById('seekback')
+    const forwardButton = document.getElementById('seekforward')
+    const backButton = document.getElementById('seekback')
     const sliderContainer = document.getElementById('rangeSlider')
     const innerBar = document.getElementById('innerBar')
     const contentHeadline = document.getElementById('contentHeadline')
@@ -15,6 +15,31 @@ window.onload = function() {
     const nextAudio = document.getElementById('nextAudio')
     const prevAudio = document.getElementById('prevAudio')
 
+    // Here is a generic fetch data function that I can use to grab what I need from the server
+    function fetchData(url, callback) {
+        fetch(url)
+        .then(response => {
+            return response.json();
+        })
+        .then((data) => {
+            console.log('data', data)
+            callback(data)
+        })
+        .catch((err) => {
+            console.log(err);
+        });
+    }
+
+    // Now, I'll get the info I need from the episodes file and use that to pass appropriate data to my podcast player function
+    fetchData(episodesUrl, podcastPlayer)
+
+    function podcastPlayer(data) {
+        // Call the first/initial instance
+        new Podcast(data[0], data)
+    } 
+
+    // Here is my JS class "Podcast". In a larger/more complex project, I would move this into its own file and import it to use where I needed it.
+    // For the sake of this project, I wanted to make set up as easy as possible (i.e. not use compilers), so am putting it here.
     class Podcast {
         constructor(data, fullData) {
             this.audio = new Audio()
@@ -36,16 +61,16 @@ window.onload = function() {
 
             mainHeadline.innerHTML = this.data.name
             
-            //Event Listeners
+            // Event Listeners
             let audioListener = this.audioCheck.bind(this, this.audio, this.data)
             this.audio.addEventListener('timeupdate', audioListener)
             playButton.addEventListener('click', this.playAudio.bind(this, this.audio))
             pauseButton.addEventListener('click', this.pauseAudio.bind(this, this.audio))
-            seekForwardButton.addEventListener('click', this.sfAudio.bind(this, this.audio))
-            seekBackButton.addEventListener('click', this.sbAudio.bind(this, this.audio))
+            forwardButton.addEventListener('click', this.sfAudio.bind(this, this.audio))
+            backButton.addEventListener('click', this.sbAudio.bind(this, this.audio))
             sliderContainer.addEventListener('click', this.rangeSlider.bind(this, this.audio))
 
-            // TODO - Add Previous!
+            // Ability to toggle to prev/next audio
             if (this.prev) {
                 let prevListener = this.changeAudio.bind(this, this.prev, this.fullData, this.audio, audioListener)
                 prevAudio.classList.remove('hidden')
@@ -67,50 +92,18 @@ window.onload = function() {
 
         }
 
-        changeAudio(data, fullData, audio, listener) {
-            audio.removeEventListener('timeupdate', listener)
-            this.createVars(data, fullData)
-            innerBar.style.setProperty('width', 0)
-            this.toggleBtn(pauseButton, playButton)
-            this.setUp()
-        }
-
         clearContent() {
             contentHeadline.innerHTML = ''
             contentLink.innerHTML = ''
             contentImage.innerHTML = ''
         }
 
-       audioCheck(audio, data) {
-            //have the slider continuously update
-            this.rangeSlider(audio)
-    
-            // Handle the markers
-            let display = []
-    
-            data.markers.forEach((marker) => {
-                let markerEnd = marker.start + marker.duration
-    
-                if (audio.currentTime > marker.start && audio.currentTime < markerEnd) {
-                    display.push(marker)
-                } else {
-                    if (display.includes(marker)) {
-                        let index = display.indexOf(marker)
-                        display.splice(index, 1)
-                    }
-                }
-            })
-
-            if (display.length) {
-                this.displayMarker(display[0])
-            } else {
-                this.clearContent()
-            }
-    
-            // Set pause button back to play at the end 
-            if (audio.currentTime === audio.duration) {
-                this.toggleBtn(pauseButton, playButton)
-            }
+        changeAudio(data, fullData, audio, listener) {
+            audio.removeEventListener('timeupdate', listener)
+            this.createVars(data, fullData)
+            innerBar.style.setProperty('width', 0)
+            this.toggleBtn(pauseButton, playButton)
+            this.setUp()
         }
 
         playAudio(audio) {
@@ -139,26 +132,57 @@ window.onload = function() {
             if (newTime < 0) {
                 newTime = 0
             }
+
             audio.currentTime = newTime
             this.playAudio(audio)
+        }
+
+        audioCheck(audio, data) {
+            // Have the slider continuously update
+            this.rangeSlider(audio)
     
+            // Handle the markers
+            this.handleMarkers(audio, data)
+    
+            // Set pause button back to play at the end 
+            if (audio.currentTime === audio.duration) {
+                this.toggleBtn(pauseButton, playButton)
+            }
+        }
+
+        handleMarkers(audio, data) {
+            let display = []
+    
+            data.markers.forEach((marker) => {
+                let markerEnd = marker.start + marker.duration
+    
+                if (audio.currentTime > marker.start && audio.currentTime < markerEnd) {
+                    display.push(marker)
+                } else {
+                    if (display.includes(marker)) {
+                        let index = display.indexOf(marker)
+                        display.splice(index, 1)
+                    }
+                }
+            })
+
+            if (display.length) {
+                this.displayMarker(display[0])
+            } else {
+                this.clearContent()
+            }
         }
 
         rangeSlider(audio, event) {
-            //to make the slider, I need to track what percentage of the width the user clicked.
-            // From there, I can use that percentage to find where it would be in the audio, and play.
-            // TODO - this only  works if you click to the right rn, need to let it click to the left!!
+            // For a click event, find where they clicked & use that to calculate percentage of inner bar & audio
             if(event) {
                 let percentage = event.offsetX / 350
                 let newTime = audio.duration * percentage
-    
-                // show the width at the current spot 
                 innerBar.style.setProperty('width',percentage * 100 + '%')
-    
                 audio.currentTime = newTime
                 this.playAudio(audio)
             } else {
-                // This is for the continuous update of the slider, not from a click event
+                // This is for the continuous update of the slider
                 let percentage = audio.currentTime / audio.duration
                 innerBar.style.setProperty('width', percentage * 100 + '%')
             }
@@ -192,28 +216,5 @@ window.onload = function() {
             }
         }
     }
-
-    // Here is a generic fetch data function that I can use to grab what I need from the server
-    function fetchData(url, callback) {
-        fetch(url)
-        .then(response => {
-            return response.json();
-        })
-        .then((data) => {
-            console.log('data', data)
-            callback(data)
-        })
-        .catch((err) => {
-            console.log(err);
-        });
-    }
-
-    // Now, I'll get the info I need from the episodes file and use that to pass appropriate data to my podcast player function
-    fetchData(episodesUrl, podcastPlayer)
-
-    function podcastPlayer(data) {
-        // Call the first/initial instance
-        new Podcast(data[0], data)
-    } 
 }
 
