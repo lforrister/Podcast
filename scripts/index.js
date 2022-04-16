@@ -8,6 +8,7 @@ window.onload = function() {
     const forwardButton = document.getElementById('seekforward')
     const backButton = document.getElementById('seekback')
     const sliderContainer = document.getElementById('rangeSlider')
+    const sliderBar = document.getElementById('sliderBar')
     const innerBar = document.getElementById('innerBar')
     const contentHeadline = document.getElementById('contentHeadline')
     const contentLink = document.getElementById('contentLink')
@@ -149,7 +150,7 @@ window.onload = function() {
         rangeSlider(audio, event) {
             // For a click event, find where they clicked & use that to calculate percentage of inner bar & audio
             if(event) {
-                let percentage = event.offsetX / 350
+                let percentage = event.offsetX / sliderBar.offsetWidth
                 let newTime = audio.duration * percentage
                 innerBar.style.setProperty('width',percentage * 100 + '%')
                 audio.currentTime = newTime
