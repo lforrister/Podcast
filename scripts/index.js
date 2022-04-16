@@ -22,7 +22,6 @@ window.onload = function() {
             return response.json();
         })
         .then((data) => {
-            console.log('data', data)
             callback(data)
         })
         .catch((err) => {
@@ -30,16 +29,14 @@ window.onload = function() {
         });
     }
 
-    // Now, I'll get the info I need from the episodes file and use that to pass appropriate data to my podcast player function
     fetchData(episodesUrl, podcastPlayer)
 
     function podcastPlayer(data) {
-        // Call the first/initial instance
+        // For this use case, I am just starting with the first index
         new Podcast(data[0], data)
     } 
 
     // Here is my JS class "Podcast". In a larger/more complex project, I would move this into its own file and import it to use where I needed it.
-    // For the sake of this project, I wanted to make set up as easy as possible (i.e. not use compilers), so am putting it here.
     class Podcast {
         constructor(data, fullData) {
             this.audio = new Audio()
@@ -106,6 +103,11 @@ window.onload = function() {
             this.setUp()
         }
 
+        toggleBtn(oldBtn, newBtn) {
+            newBtn.classList.remove('hidden')
+            oldBtn.classList.add('hidden')
+        }
+
         playAudio(audio) {
             audio.play()
             this.toggleBtn(playButton, pauseButton)
@@ -114,11 +116,6 @@ window.onload = function() {
         pauseAudio(audio) {
             audio.pause()
             this.toggleBtn(pauseButton, playButton)
-        }
-
-        toggleBtn(oldBtn, newBtn) {
-            newBtn.classList.remove('hidden')
-            oldBtn.classList.add('hidden')
         }
 
         sfAudio(audio) {
@@ -141,12 +138,26 @@ window.onload = function() {
             // Have the slider continuously update
             this.rangeSlider(audio)
     
-            // Handle the markers
             this.handleMarkers(audio, data)
     
             // Set pause button back to play at the end 
             if (audio.currentTime === audio.duration) {
                 this.toggleBtn(pauseButton, playButton)
+            }
+        }
+
+        rangeSlider(audio, event) {
+            // For a click event, find where they clicked & use that to calculate percentage of inner bar & audio
+            if(event) {
+                let percentage = event.offsetX / 350
+                let newTime = audio.duration * percentage
+                innerBar.style.setProperty('width',percentage * 100 + '%')
+                audio.currentTime = newTime
+                this.playAudio(audio)
+            } else {
+                // This is for the continuous update of the slider
+                let percentage = audio.currentTime / audio.duration
+                innerBar.style.setProperty('width', percentage * 100 + '%')
             }
         }
 
@@ -173,48 +184,34 @@ window.onload = function() {
             }
         }
 
-        rangeSlider(audio, event) {
-            // For a click event, find where they clicked & use that to calculate percentage of inner bar & audio
-            if(event) {
-                let percentage = event.offsetX / 350
-                let newTime = audio.duration * percentage
-                innerBar.style.setProperty('width',percentage * 100 + '%')
-                audio.currentTime = newTime
-                this.playAudio(audio)
-            } else {
-                // This is for the continuous update of the slider
-                let percentage = audio.currentTime / audio.duration
-                innerBar.style.setProperty('width', percentage * 100 + '%')
-            }
-        }
-
         displayMarker(marker) {
             if (marker.content) {
-                if (marker.type === 'text') {
-                    if (!contentHeadline.innerHTML) {
-                        contentHeadline.innerHTML = marker.content
-                    }
-                } else {
-                    contentHeadline.innerHTML = ''
-                }
-    
-                if (marker.type === 'ad') {
-                    if (!contentImage.innerHTML) {
-                        contentLink.innerHTML = '<a href="' + marker.link + '" target="_blank">' + marker.content + '</a>'
-                    }
-                } else {
-                    contentLink.innerHTML = ''
-                }
-    
-                if (marker.type === 'image') {
-                    if (!contentImage.innerHTML) {
-                        contentImage.innerHTML = '<img src="http://localhost:1337/' + marker.content + '" id="contentImg" alt="Advertisement Image"></img>'
-                    } 
-                } else {
-                    contentImage.innerHTML = null
+                switch(marker.type) {
+                    case 'text':
+                        contentLink.innerHTML = ''
+                        contentImage.innerHTML = ''
+                        if (!contentHeadline.innerHTML) {
+                            contentHeadline.innerHTML = marker.content
+                        }
+                        break
+                    case 'ad':
+                        contentHeadline.innerHTML = ''
+                        contentImage.innerHTML = ''
+                        if (!contentImage.innerHTML) {
+                            contentLink.innerHTML = '<a href="' + marker.link + '" target="_blank">' + marker.content + '</a>'
+                        }
+                        break
+                    case 'image':
+                        contentHeadline.innerHTML = ''
+                        contentLink.innerHTML = ''
+                        if (!contentImage.innerHTML) {
+                            contentImage.innerHTML = '<img src="http://localhost:1337/' + marker.content + '" id="contentImg" alt="Advertisement Image"></img>'
+                        } 
+                        break
+                    default:
+                        this.clearContent()                 
                 }
             }
         }
     }
 }
-
