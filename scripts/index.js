@@ -16,6 +16,7 @@ window.onload = function() {
 
     class Podcast {
         constructor(data, fullData) {
+            // TODO - Put this into its own function so you don't have to redo it later
             this.data = data
             this.fullData = fullData
             this.audio = new Audio('http://localhost:1337' + data.audio)
@@ -27,18 +28,46 @@ window.onload = function() {
         }
         
         setUp() {
+            this.clearContent()
+
             mainHeadline.innerHTML = this.data.name
             
             //Event Listeners
-            this.audio.addEventListener('timeupdate', this.audioCheck.bind(this, this.audio, this.data))
+            let listener = this.audioCheck.bind(this, this.audio, this.data)
+            this.audio.addEventListener('timeupdate', listener)
             playButton.addEventListener('click', this.playAudio.bind(this, this.audio))
             pauseButton.addEventListener('click', this.pauseAudio.bind(this, this.audio))
             seekForwardButton.addEventListener('click', this.sfAudio.bind(this, this.audio))
             seekBackButton.addEventListener('click', this.sbAudio.bind(this, this.audio))
             sliderContainer.addEventListener('click', this.rangeSlider.bind(this, this.audio))
+
+            // TODO - Add Previous!
+            if (this.next) {
+                nextAudio.classList.remove('hidden')
+                nextAudio.addEventListener('click', () => {
+                    //this.audio.removeEventListener('timeupdate', this.test.bind(this))
+                    this.audio.removeEventListener('timeupdate', listener)
+                    this.data = this.next
+                    this.audio.src = 'http://localhost:1337' + this.data.audio
+                    this.index = this.fullData.indexOf(this.data)
+                    this.prev = this.fullData[this.index - 1] ? this.fullData[this.index - 1] : null
+                    this.next = this.fullData[this.index + 1] ? this.fullData[this.index + 1] : null
+
+                    //TODO - range slider width should reset to 0
+                    this.setUp()
+                })
+            } else {
+                nextAudio.classList.add('hidden')
+            }
         }
 
-       audioCheck(audio, data) {    
+        clearContent() {
+            contentHeadline.innerHTML = ''
+            contentLink.innerHTML = ''
+            contentImage.innerHTML = null
+        }
+
+       audioCheck(audio, data) {
             //have the slider continuously update
             this.rangeSlider(audio)
     
@@ -102,6 +131,7 @@ window.onload = function() {
         rangeSlider(audio, event) {
             //to make the slider, I need to track what percentage of the width the user clicked.
             // From there, I can use that percentage to find where it would be in the audio, and play.
+            // TODO - this only  works if you click to the right rn, need to let it click to the left!!
             if(event) {
                 let percentage = event.offsetX / 350
                 let newTime = audio.duration * percentage
@@ -138,49 +168,14 @@ window.onload = function() {
     
                 if (marker.type === 'image') {
                     if (!contentImage.innerHTML) {
-                        contentImage.innerHTML = '<img src="http://localhost:1337/' + marker.content + '" alt="Advertisement Image"></img>'
-                    }
+                        contentImage.innerHTML = '<img src="http://localhost:1337/' + marker.content + '" id="contentImg" alt="Advertisement Image"></img>'
+                    } 
                 } else {
                     contentImage.innerHTML = null
                 }
             }
         }
     }
-
-    // Then, I'll make a class 'Podcast' that we can use to initialize each instance of our podcast player
-    // class Podcast {
-    //     constructor(data, fullData, audio) {
-    //         this.current = data
-    //         this.fullData = fullData
-    //         this.audio = audio
-    //     }
-
-    //         //let's clear everything out
-    //         // contentHeadline.innerHTML = ''
-    //         // contentLink.innerHTML = ''
-    //         // contentImage.innerHTML = ''
-            
-    //         // const index = fullData.indexOf(data)
-    //         // const prev = fullData[index - 1] ? fullData[index - 1] : null
-    //         // const next = fullData[index + 1] ? fullData[index + 1] : null
-
-            
-    //         //Is there a next item?
-    //         // if (next) {
-    //         //     console.log('next', next)
-    //         //     nextAudio.classList.remove('hidden')
-    //         //     nextAudio.addEventListener('click', () => {
-    //         //         console.log('clicked')
-    //         //         audio.src = 'http://localhost:1337' + next.audio 
-    //         //         new Podcast(next, fullData, audio)
-    //         //     })
-    //         // } else {
-    //         //     nextAudio.classList.add()
-    //         // }
-
-    //     }
-    // }
-
 
     // Here is a generic fetch data function that I can use to grab what I need from the server
     function fetchData(url, callback) {
