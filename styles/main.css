@@ -1,6 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@100;400;800&family=Raleway:wght@300;400;600&display=swap');
 
-
+/*TODO = MOBILE! */
 
 body {
     /* resuable variables  */
@@ -42,7 +42,7 @@ body {
 }
 
 .headline {
-    width: 100%;
+    width: calc(100% - 60px);
     text-align: center;
     text-transform: uppercase;
     margin: 0 auto 15px auto;

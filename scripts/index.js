@@ -13,19 +13,22 @@ window.onload = function() {
     const contentLink = document.getElementById('contentLink')
     const contentImage = document.getElementById('contentImage')
     const nextAudio = document.getElementById('nextAudio')
+    const prevAudio = document.getElementById('prevAudio')
 
     class Podcast {
         constructor(data, fullData) {
-            // TODO - Put this into its own function so you don't have to redo it later
+            this.audio = new Audio()
+            this.createVars(data, fullData)
+            this.setUp()
+        }
+
+        createVars(data, fullData) {
             this.data = data
             this.fullData = fullData
-            this.audio = new Audio('http://localhost:1337' + data.audio)
-            this.index = fullData.indexOf(data)
-            this.prev = fullData[this.index - 1] ? fullData[this.index - 1] : null
-            this.next = fullData[this.index + 1] ? fullData[this.index + 1] : null 
-
-           
-            this.setUp()
+            this.audio.src = 'http://localhost:1337' + this.data.audio
+            this.index = this.fullData.indexOf(this.data)
+            this.prev = this.fullData[this.index - 1] ? this.fullData[this.index - 1] : null
+            this.next = this.fullData[this.index + 1] ? this.fullData[this.index + 1] : null
         }
         
         setUp() {
@@ -43,16 +46,24 @@ window.onload = function() {
             sliderContainer.addEventListener('click', this.rangeSlider.bind(this, this.audio))
 
             // TODO - Add Previous!
+            if (this.prev) {
+                prevAudio.classList.remove('hidden')
+                prevAudio.addEventListener('click', () => {
+                    this.audio.removeEventListener('timeupdate', listener)
+                    this.createVars(this.prev, this.fullData)
+
+                    //TODO - range slider width should reset to 0
+                    this.setUp()
+                })
+            } else {
+                prevAudio.classList.add('hidden')
+            }
+
             if (this.next) {
                 nextAudio.classList.remove('hidden')
                 nextAudio.addEventListener('click', () => {
-                    //this.audio.removeEventListener('timeupdate', this.test.bind(this))
                     this.audio.removeEventListener('timeupdate', listener)
-                    this.data = this.next
-                    this.audio.src = 'http://localhost:1337' + this.data.audio
-                    this.index = this.fullData.indexOf(this.data)
-                    this.prev = this.fullData[this.index - 1] ? this.fullData[this.index - 1] : null
-                    this.next = this.fullData[this.index + 1] ? this.fullData[this.index + 1] : null
+                    this.createVars(this.next, this.fullData)
 
                     //TODO - range slider width should reset to 0
                     this.setUp()
