@@ -32,7 +32,6 @@ window.onload = function() {
         }
         
         setUp() {
-            console.log('current', this.data)
             this.clearContent()
 
             mainHeadline.innerHTML = this.data.name
@@ -71,7 +70,8 @@ window.onload = function() {
         changeAudio(data, fullData, audio, listener) {
             audio.removeEventListener('timeupdate', listener)
             this.createVars(data, fullData)
-            //TODO - range slider width should reset to 0
+            innerBar.style.setProperty('width', 0)
+            this.toggleBtn(pauseButton, playButton)
             this.setUp()
         }
 
@@ -153,14 +153,14 @@ window.onload = function() {
                 let newTime = audio.duration * percentage
     
                 // show the width at the current spot 
-                innerBar.style.setProperty('right', 100 - (percentage * 100) + '%')
+                innerBar.style.setProperty('width',percentage * 100 + '%')
     
                 audio.currentTime = newTime
                 this.playAudio(audio)
             } else {
                 // This is for the continuous update of the slider, not from a click event
                 let percentage = audio.currentTime / audio.duration
-                innerBar.style.setProperty('right', 100 - (percentage * 100) + '%')
+                innerBar.style.setProperty('width', percentage * 100 + '%')
             }
         }
 
